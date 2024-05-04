@@ -12,9 +12,18 @@ info:
     url: 'http://www.apache.org/licenses/LICENSE-2.0.html'
 servers:
   - url: 'https://api.heladeria-apilia.com'
+tags:
+  - name: gustos
+    description: Todo sobre gustos
+  - name: pedidos
+    description: Todo sobre pedidos
+  - name: repartidores
+    description: Todo sobre repartidores
 paths:
   /gustos:
     get:
+      tags:
+        - gustos
       description: Listar los gustos de helado
       parameters:
       - in: query
@@ -33,6 +42,8 @@ paths:
                   $ref: '#/components/schemas/Gusto'
   /gustos/{gustoId}:
     get:
+      tags:
+        - gustos
       description: Ver un gusto particular
       parameters:
       - $ref: '#/components/parameters/gustoId'
@@ -47,6 +58,8 @@ paths:
           description: No se conoce un gusto con tal id
   /pedidos:
     post:
+      tags:
+        - pedidos
       description: Crear un nuevo pedido a la dirección indicada
       requestBody:
         content:
@@ -67,6 +80,8 @@ paths:
                 $ref: '#/components/schemas/Pedido'
   /pedidos/{pedidoId}:
     get:
+      tags:
+        - pedidos
       description: Ver un pedido particular
       parameters:
       - $ref: '#/components/parameters/pedidoId'
@@ -80,6 +95,8 @@ paths:
         '404':
           description: No se conoce un pedido con tal id
     put:
+      tags:
+        - pedidos
       description: Cambiar los datos de un pedido particular
       parameters:
       - $ref: '#/components/parameters/pedidoId'
@@ -104,6 +121,8 @@ paths:
           description: No se conoce un pedido con tal id
   /pedidos/{pedidoId}/potes:
     get:
+      tags:
+        - pedidos
       description: Lista los potes que componen un pedido
       parameters:
       - $ref: '#/components/parameters/pedidoId'
@@ -119,6 +138,8 @@ paths:
         '404':
           description: No se conoce un pedido con tal id
     post:
+      tags:
+        - pedidos
       description: Agrega un pote a un pedido
       parameters:
       - $ref: '#/components/parameters/pedidoId'
@@ -148,6 +169,8 @@ paths:
           description: No se conoce un pedido con tal id
   /pedidos/{pedidoId}/potes/{poteId}:
     delete:
+      tags:
+        - pedidos
       description: quitar un pote de un pedido
       parameters:
       - $ref: '#/components/parameters/pedidoId'
@@ -159,6 +182,8 @@ paths:
           description: No se conoce un pedido y/o pote con tal id
   /pedidos/{pedidoId}/pagar:
     post:
+      tags:
+        - pedidos
       description: Inicia el pago del pedido
       parameters:
       - $ref: '#/components/parameters/pedidoId'
@@ -174,6 +199,8 @@ paths:
           description: No se conoce un pedido con tal id
   /pedidos/{pedidoId}/pago:
     get:
+      tags:
+        - pedidos
       description: Ver el estado del pago de un pedido particular
       parameters:
       - $ref: '#/components/parameters/pedidoId'
@@ -186,6 +213,198 @@ paths:
                 $ref: '#/components/schemas/Pago'
         '404':
           description: No se conoce un pedido con tal id
+  /pedidos/{pedidoId}/repartidores/{repartidorId}:
+    post:
+      tags:
+        - pedidos
+      description: Asociar un pedido con un repartidor
+      parameters:
+        - $ref: '#/components/parameters/pedidoId'
+        - $ref: '#/components/parameters/repartidorId'
+      responses:
+        '200':
+          description: El pedido ha sido asociado con el repartidor deseado
+        '404':
+          description: No se conoce un pedido y/o repartidor con tal id
+    delete:
+      tags:
+        - pedidos
+      description: Desasociar un pedido con un repartidor
+      parameters:
+        - $ref: '#/components/parameters/pedidoId'
+        - $ref: '#/components/parameters/repartidorId'
+      responses:
+        '200':
+          description: El pedido ha sido desasociado del repartidor deseado
+        '404':
+          description: No se conoce un pedido y/o repartidor con tal id
+  /repartidores:
+    post:
+      tags:
+        - repartidores
+      description: Agregamos un repartidor
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Repartidor'
+      responses:
+        '201':
+          description: El repartidor ha sido agregado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Repartidor'
+        '400':
+          description: El request para agregar un repartidor nuevo, tuvo un error de validación
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+    get:
+      tags:
+        - repartidores
+      description: Listar los repartidores
+      parameters:
+      - in: query
+        name: edad
+        required: false
+        schema:
+          $ref: '#/components/schemas/EdadDelRepartidor'
+      responses:
+        '200':
+          description: Estos son los repartidores
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Repartidor'
+  /repartidores/{repartidorId}:
+    put:
+      tags:
+        - repartidores
+      description: Cambiar los datos de un repartidor en particular
+      parameters:
+      - $ref: '#/components/parameters/repartidorId'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Repartidor'
+      responses:
+        '200':
+          description: El repartidor ha sido actualizado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Repartidor'
+        '404':
+          description: No se conoce un repartidor con tal id
+        '400':
+          description: El request para modificar un repartidor existente, tuvo un error de validación
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+    delete:
+      tags:
+        - repartidores
+      description: Eliminamos un repartidor
+      parameters:
+      - $ref: '#/components/parameters/repartidorId'
+      responses:
+        '204':
+          description: Sea eliminado al repartidor
+        '404':
+          description: No se conoce un repartidor con tal id
+  /repartidores/{repartidorId}/vehiculos:
+    post:
+      tags:
+        - repartidores
+      description: Agregando un vehiculo a un repartidor
+      parameters:
+      - $ref: '#/components/parameters/repartidorId'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              oneOf:
+                - $ref: '#/components/schemas/DatosDeMotocicleta'
+                - $ref: '#/components/schemas/DatosDeBicicleta'
+                - $ref: '#/components/schemas/DatosDeAutomovil'
+      responses:
+        '201':
+          description: El vehiculo ha sido agregado al repartidor
+          content:
+            application/json:
+              schema:
+                oneOf:
+                - $ref: '#/components/schemas/DatosDeMotocicleta'
+                - $ref: '#/components/schemas/DatosDeBicicleta'
+                - $ref: '#/components/schemas/DatosDeAutomovil'
+        '400':
+          description: El request para agregar un vehiculo nuevo a un repartidor, tuvo un error de validación
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        '404':
+          description: No se conoce un repartidor con tal id
+    get:
+      tags:
+        - repartidores
+      description: Listar los vehiculos de un repartidor
+      parameters:
+      - $ref: '#/components/parameters/repartidorId'
+      responses:
+        '200':
+          description: Estos son los repartidores que trabajan en la heladeria
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  oneOf:
+                  - $ref: '#/components/schemas/DatosDeMotocicleta'
+                  - $ref: '#/components/schemas/DatosDeBicicleta'
+                  - $ref: '#/components/schemas/DatosDeAutomovil'
+        '404':
+          description: No se conoce un repartidor con tal id
+  /repartidores/{repartidorId}/vehiculos/{vehiculoId}:
+    put:
+      tags:
+        - repartidores
+      description: Cambiar los datos de un vehiculo de un repartidor en particular
+      parameters:
+        - $ref: '#/components/parameters/repartidorId'
+        - $ref: '#/components/parameters/vehiculoId'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              oneOf:
+              - $ref: '#/components/schemas/DatosDeMotocicleta'
+              - $ref: '#/components/schemas/DatosDeBicicleta'
+              - $ref: '#/components/schemas/DatosDeAutomovil'
+      responses:
+        '200':
+          description: El vehiculo ha sido actualizado
+          content:
+            application/json:
+              schema:
+                oneOf:
+                - $ref: '#/components/schemas/DatosDeMotocicleta'
+                - $ref: '#/components/schemas/DatosDeBicicleta'
+                - $ref: '#/components/schemas/DatosDeAutomovil'
+        '404':
+          description: No se conoce un vehiculo y/o repartidor con tal id
+        '400':
+          description: El request para modificar un vehiculo existente, el cual esta asociado a un repartidor, tuvo un error de validación
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
 
 components:
   parameters:
@@ -210,7 +429,32 @@ components:
       required: true
       schema:
         type: integer
+    repartidorId:
+      name: repartidorId
+      in: path
+      description: id del repartidor
+      required: true
+      schema:
+        type: integer
+    vehiculoId:
+      name: vehiculoId
+      in: path
+      description: id del vehiculo
+      required: true
+      schema:
+        type: integer
   schemas:
+    Error:
+      type: object
+      properties:
+        mensaje_de_error:
+          type: string
+        codigo_de_error:
+          type: number
+          format: int8
+          example: 1
+        campo:
+          type: string
     TipoDeGusto:
       description: categoría de gustos de helado
       type: string
@@ -256,6 +500,8 @@ components:
             pagar: 
               $ref: '#/components/schemas/Link'
             pago: 
+              $ref: '#/components/schemas/Link'
+            repartidorAsociado:
               $ref: '#/components/schemas/Link'
       required: [id, direccion_entrega]
     PesoDePote:
@@ -379,6 +625,112 @@ components:
           - DELETE
           example: GET
           description: el verbo a usar en el link
-          
-            
-  
+    Repartidor:
+      description: un repartidor
+      type: object
+      properties:
+        id: #read only
+          type: integer
+          description: identificador del repartidor
+          example: 1
+        nombre:
+          type: string
+          description: nombre del repartidor
+          example: Juan
+        apellido:
+          type: string
+          description: apellido del repartidor
+          example: Avila
+        edad:
+          $ref: '#/components/schemas/EdadDelRepartidor'
+        cuil:
+          type: string
+          description: cuil del repartidor, el cual tiene 12 numeros
+          example: "20401099387"
+        _links: #read only
+          type: object
+          description: hypermedia links de un pote
+          properties:
+            pedidos:
+              $ref: '#/components/schemas/Link'
+            vehiculos:
+              $ref: '#/components/schemas/Link'
+      required: [id, nombre, apellido, edad, cuil]
+    EdadDelRepartidor:
+      description: edad que tiene un repartidor
+      type: number
+      format: int8
+      example: 20
+      minimum: 15
+      maximum: 70
+    DatosDelVehiculo:
+      description: los datos de un vehiculo
+      type: object
+      discriminator:
+        propertyName: tipoDeVehiculo
+      properties:
+        id: #read only
+          type: integer
+          description: identificador del vehiculo
+          example: 1
+        tipoDeVehiculo: #read only
+          type: string
+          description: se usa para determinar el tipo de vehiculo que usa
+          example: "DatosDeBicicleta"
+        marca: #read only
+          type: string
+          description: marca del vehiculo
+          example: "Specialized"
+        modelo: #read only
+          type: string
+          description: modelo del vehiculo
+          example: "Specialized Stumpjumper"
+        _links: #read only
+          type: object
+          description: hypermedia links de un pote
+          properties:
+            propietario:
+              $ref: '#/components/schemas/Link'
+      required: [id, tipoDeVehiculo, marca, modelo]
+    DatosDeBicicleta:
+      description: datos de una bicicleta
+      allOf:
+      - $ref: '#/components/schemas/DatosDelVehiculo'
+      - type: object
+        properties:
+          rodado:
+            type: string
+            description: es el diametro externo de la llanta de la bicicleta
+            enum:
+            - "12"
+            - "14"
+            - "16"
+            - "20"
+            - "24"
+            - "26"
+            example: 26
+        required: [rodado]
+    DatosDeMotocicleta:
+      description: datos de una motocicleta
+      allOf:
+      - $ref: '#/components/schemas/DatosDelVehiculo'
+      - type: object
+        properties:
+          patente:
+            type: string
+            description: patente de la motocicleta
+            pattern: '^\[A-Z]{3}d{3}$'
+            example: "JXT685"
+        required: [patente]
+    DatosDeAutomovil:
+      description: datos de un automovil
+      allOf:
+      - $ref: '#/components/schemas/DatosDelVehiculo'
+      - type: object
+        properties:
+          patente:
+            type: string
+            description: patente del automovil
+            pattern: '^\[A-Z]{3}d{3}$'
+            example: "JZA155"
+        required: [patente]
