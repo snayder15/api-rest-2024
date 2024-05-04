@@ -191,7 +191,9 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/DatosDePago'
+              oneOf:
+              - $ref: '#/components/schemas/DatosDePagoTarjeta'
+              - $ref: '#/components/schemas/DatosDePagoBilleteraVirtual'
       responses:
         '202':
           description: Los datos de pago han sido recibidos y serán procesados
@@ -556,6 +558,7 @@ components:
         tipoDePago:
           type: string
           description: se usa para determinar el tipo de pago a usar
+          example: "Tarjeta"
       required: [tipoDePago]
     DatosDePagoBilleteraVirtual:
       description: datos de pago cuando se usa una billetera virtual
